@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GEN Z 瞻溢 | 新一代移动能源品牌 | Next-Gen Portable Energy</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28' fill='%2300d4ff'>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ===== LOADING SCREEN ===== */
+    .loading-screen {
+      position: fixed; inset: 0; background: var(--bg-darkest); z-index: 100000;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+    .loading-screen.hidden { opacity: 0; visibility: hidden; }
+    .loading-logo {
+      font-size: 2.5rem; font-weight: 900; letter-spacing: 0.2em;
+      margin-bottom: 2rem; background: var(--gradient-primary);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: loadingPulse 1.5s ease-in-out infinite;
+    }
+    .loading-bar {
+      width: 200px; height: 2px; background: rgba(0,212,255,0.2); border-radius: 2px; overflow: hidden;
+    }
+    .loading-progress {
+      height: 100%; background: var(--gradient-primary); width: 0%;
+      animation: loadingProgress 2s ease-out forwards;
+    }
+    .loading-percent {
+      margin-top: 1rem; font-family: 'SF Mono', monospace; color: var(--primary);
+      font-size: 0.9rem;
+    }
+    @keyframes loadingPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+    @keyframes loadingProgress { 0% { width:0%; } 100% { width:100%; } }
+
+    /* ===== CURSOR GLOW ===== */
+    .cursor-glow {
+      position: fixed; width: 300px; height: 300px; pointer-events: none;
+      background: radial-gradient(circle, rgba(0,212,255,0.12) 0%, transparent 70%);
+      transform: translate(-50%, -50%); z-index: 0; opacity: 0; transition: opacity 0.3s;
+    }
+    @media (hover: hover) { .cursor-glow { opacity: 1; } }
+
+    /* ===== BASE RESET & VARIABLES ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #e5e5e5; line-height: 1.6; overflow-x: hidden; background: #050508;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    :root {
+      --primary: #00d4ff;
+      --primary-glow: rgba(0, 212, 255, 0.3);
+      --secondary: #00ff88;
+      --accent-purple: #aa44ff;
+      --accent-orange: #ff6b35;
+      --text-white: #ffffff;
+      --text-primary: #e5e5e5;
+      --text-muted: #888899;
+      --text-faint: #555566;
+      --bg-darkest: #050508;
+      --bg-dark: #0a0a12;
+      --bg-card: #10101a;
+      --bg-lighter: #1a1a28;
+      --border-subtle: rgba(0, 212, 255, 0.15);
+      --border-strong: rgba(0, 212, 255, 0.3);
+      --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.15);
+      --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+      --gradient-dark: linear-gradient(180deg, #050508 0%, #0a0a12 40%, #050508 100%);
+      --gradient-card: linear-gradient(145deg, rgba(20, 20, 35, 0.9), rgba(10, 10, 20, 0.95));
+      --glass-bg: rgba(10, 10, 20, 0.7);
+    }
+
+    /* ===== CUSTOM SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-darkest); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { filter: brightness(1.2); }
+
+    /* ===== BACKGROUND ELEMENTS ===== */
+    .bg-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.4;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: bgGridMove 30s linear infinite;
+    }
+    @keyframes bgGridMove {
+      0% { transform: perspective(600px) rotateX(65deg) translateY(0); }
+      100% { transform: perspective(600px) rotateX(65deg) translateY(60px); }
+    }
+    .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.25; animation: orbFloat 12s ease-in-out infinite; }
+    .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -150px; left: -150px; animation-duration: 15s; }
+    .orb-2 { width: 400px; height: 400px; background: var(--secondary); bottom: -100px; right: -100px; animation-duration: 18s; animation-delay: -5s; }
+    .orb-3 { width: 300px; height: 300px; background: var(--accent-purple); top: 40%; right: 10%; animation-duration: 20s; animation-delay: -2s; }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+    .scanlines {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.15;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px);
+    }
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .particle {
+      position: absolute; width: 3px; height: 3px; background: var(--primary); border-radius: 50%;
+      opacity: 0.5; box-shadow: 0 0 8px var(--primary);
+      animation: particleFloat 20s linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+    }
+
+    /* ===== DATA NUMBER COUNTER ===== */
+    .counter-value { font-family: 'SF Mono', monospace; }
+    .counter-digit { display: inline-block; }
+
+    /* ===== TILT EFFECT FOR CARDS ===== */
+    .tilt-card { transform-style: preserve-3d; perspective: 1000px; }
+    .tilt-card .tilt-inner { transition: transform 0.1s ease-out; transform-style: preserve-3d; }
+    .tilt-card:hover .tilt-inner { transform: translateZ(20px); }
+
+    /* ===== GLASS MORPHISM EFFECT ===== */
+    .glass {
+      background: rgba(10,10,20,0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ===== MARQUEE SCROLLER ===== */
+    .marquee-container { overflow: hidden; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+    .marquee { display: flex; gap: 4rem; animation: marquee 25s linear infinite; }
+    .marquee:hover { animation-play-state: paused; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .marquee-item {
+      display: flex; align-items: center; gap: 1rem; white-space: nowrap;
+      color: rgba(255,255,255,0.6); font-weight: 600;
+    }
+    .marquee-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 8px var(--primary); }
+
+    /* ===== FAQS ACCORDION ===== */
+    .faq-item {
+      border: 1px solid var(--border-subtle); border-radius: 12px;
+      background: var(--bg-card); overflow: hidden; transition: border-color 0.3s;
+    }
+    .faq-item:hover { border-color: rgba(0,212,255,0.3); }
+    .faq-btn {
+      width: 100%; padding: 1.25rem 1.5rem; background: none; border: none;
+      color: var(--text-white); font-size: 1rem; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left;
+    }
+    .faq-icon {
+      width: 24px; height: 24px; border: 1px solid rgba(0,212,255,0.3); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; transition: all 0.3s; flex-shrink: 0; color: var(--primary);
+    }
+    .faq-item.active .faq-icon { background: var(--gradient-primary); color: var(--bg-darkest); border-color: transparent; transform: rotate(45deg); }
+    .faq-content {
+      max-height: 0; overflow: hidden; transition: max-height 0.35s ease-out;
+    }
+    .faq-inner { padding: 0 1.5rem 1.25rem 1.5rem; color: rgba(255,255,255,0.65); line-height: 1.7; }
+    .faq-item.active .faq-content { max-height: 300px; }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials-container { overflow: hidden; position: relative; }
+    .testimonials-track { display: flex; gap: 1.5rem; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .testimonial-card {
+      min-width: 360px; max-width: 360px; padding: 1.75rem; background: var(--bg-card);
+      border: 1px solid var(--border-subtle); border-radius: 16px; flex-shrink: 0;
+    }
+    .testimonial-stars { color: var(--accent-orange); font-size: 1.1rem; margin-bottom: 1rem; }
+    .testimonial-text { color: rgba(255,255,255,0.7); margin-bottom: 1.25rem; line-height: 1.7; }
+    .testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+    .testimonial-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--bg-darkest);
+    }
+    .testimonial-name { font-weight: 700; color: var(--text-white); }
+    .testimonial-role { font-size: 0.85rem; color: var(--text-muted); }
+    .testimonial-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
+    .testimonial-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s;
+    }
+    .testimonial-dot.active { background: var(--primary); transform: scale(1.3); box-shadow: 0 0 8px var(--primary); }
+    .testimonial-nav {
+      position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px;
+      border: 1px solid var(--border-subtle); border-radius: 50%; background: var(--bg-card);
+      display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-white); transition: all 0.3s; z-index: 2;
+    }
+    .testimonial-nav:hover { border-color: var(--primary); color: var(--primary); background: rgba(0,212,255,0.1); }
+    .testimonial-nav.prev { left: 10px; }
+    .testimonial-nav.next { right: 10px; }
+
+    /* ===== STICKY SECTION EFFECT ===== */
+    .reveal-text { background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* ===== RIPPLE EFFECT ===== */
+    .ripple { position: relative; overflow: hidden; }
+    .ripple-wave {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.2);
+      transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none;
+    }
+    @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      height: 76px; display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: transparent;
+    }
+    nav.scrolled {
+      background: rgba(5, 5, 10, 0.85);
+      backdrop-filter: blur(25px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+    }
+    .nav-inner {
+      max-width: 1400px; width: 100%; margin: 0 auto; padding: 0 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-left { display: flex; align-items: center; gap: 3.5rem; }
+    .logo {
+      display: flex; align-items: center; gap: 0.75rem; font-weight: 900; font-size: 1.4rem;
+      letter-spacing: -0.03em; color: var(--text-white);
+    }
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+      font-weight: 900; color: #050508; font-size: 1.1rem;
+    }
+    .logo-text span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      position: relative; font-size: 0.92rem; font-weight: 500; color: rgba(255, 255, 255, 0.75);
+      padding: 0.5rem 0; transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+      background: var(--gradient-primary); transition: width 0.3s;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+    .nav-phone {
+      display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7);
+      padding: 0.5rem 0.875rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+    }
+    .lang-switch {
+      padding: 0.5rem 0.875rem; background: transparent; border: 1px solid var(--border-subtle);
+      color: var(--primary); font-weight: 600; font-size: 0.8rem; border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .lang-switch:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--border-strong); }
+    .btn-nav-outline {
+      padding: 0.75rem 1.5rem; background: transparent; border: 1.5px solid var(--border-strong);
+      color: var(--primary); font-weight: 600; font-size: 0.9rem; border-radius: 8px; transition: all 0.25s;
+    }
+    .btn-nav-outline:hover { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 20px var(--primary-glow); }
+    .btn-nav-primary {
+      padding: 0.75rem 1.75rem; background: var(--gradient-primary); border: none;
+      color: #050508; font-weight: 700; font-size: 0.9rem; border-radius: 8px; transition: all 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .btn-nav-primary::before {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: translateX(-100%); transition: transform 0.6s;
+    }
+    .btn-nav-primary:hover::before { transform: translateX(100%); }
+    .btn-nav-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.35); }
+    .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 8px; }
+    .mobile-menu-btn span { width: 26px; height: 2px; background: var(--primary); border-radius: 2px; transition: all 0.3s; }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      position: relative; min-height: 100vh; display: flex; align-items: center; padding-top: 80px;
+      background: var(--gradient-dark); overflow: hidden;
+    }
+    .hero-inner {
+      position: relative; z-index: 2; max-width: 1400px; width: 100%; margin: 0 auto; padding: 3rem 2rem 5rem;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: center;
+    }
+    .hero-pre {
+      display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem 0.5rem 0.5rem; background: rgba(0, 212, 255, 0.08);
+      border: 1px solid var(--border-subtle); border-radius: 100px;
+    }
+    .hero-pre-pill {
+      background: var(--gradient-primary); color: #050508; font-weight: 800; font-size: 0.7rem;
+      padding: 0.25rem 0.625rem; border-radius: 6px; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-pre-text { font-size: 0.85rem; color: rgba(255, 255, 255, 0.75); }
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4.25rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.04em;
+      margin-bottom: 1.25rem; color: var(--text-white);
+    }
+    .hero-title .highlight {
+      background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 25px rgba(0, 212, 255, 0.4));
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: rgba(255, 255, 255, 0.7); max-width: 520px; margin-bottom: 2.5rem; line-height: 1.7;
+    }
+    .hero-stats { display: flex; gap: 2rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .hero-stat {
+      padding: 1rem 1.25rem; background: rgba(0, 212, 255, 0.05); border: 1px solid var(--border-subtle); border-radius: 12px;
+      position: relative; overflow: hidden;
+    }
+    .hero-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient-primary); }
+    .hero-stat-num { font-size: 1.75rem; font-weight: 800; color: var(--primary); font-family: 'SF Mono', 'Courier New', monospace; }
+    .hero-stat-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem; }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .btn-hero-primary {
+      padding: 1rem 2.25rem; background: var(--gradient-primary); border: none; border-radius: 10px;
+      color: #050508; font-weight: 800; font-size: 1rem; display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(0, 212, 255, 0.4); }
+    .btn-hero-secondary {
+      padding: 1rem 2rem; background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+      color: var(--text-white); font-weight: 600; font-size: 1rem; transition: all 0.3s;
+    }
+    .btn-hero-secondary:hover { border-color: var(--primary); color: var(--primary); background: rgba(0, 212, 255, 0.08); box-shadow: 0 0 25px var(--primary-glow); }
+    .hero-product { position: relative; display: flex; justify-content: center; align-items: center; }
+    .hero-product-glow {
+      position: absolute; width: 120%; height: 120%; background: radial-gradient(circle, rgba(0, 212, 255, 0.25) 0%, transparent 60%);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+    .product-holo-frame {
+      position: absolute; inset: -30px; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 24px;
+      animation: holoPulse 5s ease-in-out infinite;
+    }
+    .product-holo-frame::before, .product-holo-frame::after {
+      content: ''; position: absolute; width: 24px; height: 24px; border: 2px solid var(--primary);
+    }
+    .product-holo-frame::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+    .product-holo-frame::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+    @keyframes holoPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.15), inset 0 0 30px rgba(0, 212, 255, 0.08); }
+      50% { box-shadow: 0 0 60px rgba(0, 212, 255, 0.25), inset 0 0 50px rgba(0, 212, 255, 0.12); }
+    }
+    .product-device {
+      position: relative; width: 320px; height: 380px; transform-style: preserve-3d;
+      animation: deviceFloat 7s ease-in-out infinite;
+    }
+    @keyframes deviceFloat {
+      0%, 100% { transform: translateY(0) rotateY(-8deg) rotateX(3deg); }
+      50% { transform: translateY(-25px) rotateY(8deg) rotateX(-3deg); }
+    }
+    .device-body {
+      position: absolute; inset: 0; background: linear-gradient(145deg, #1a1a2a 0%, #252538 30%, #1a1a2a 70%, #0f0f1a 100%);
+      border-radius: 20px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 80px rgba(0, 212, 255, 0.08);
+      border: 1px solid rgba(0, 212, 255, 0.15); overflow: hidden;
+    }
+    .device-body::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.15;
+      background: conic-gradient(from 0deg at 50% 50%, transparent, var(--primary), transparent, var(--secondary), transparent);
+      animation: energySpin 15s linear infinite;
+    }
+    @keyframes energySpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .device-handle-top {
+      position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 180px; height: 45px;
+      background: linear-gradient(180deg, #353548, #252535); border-radius: 40px 40px 0 0; border: 3px solid #1a1a28; border-bottom: none;
+    }
+    .device-handle-top::before { content: ''; position: absolute; inset: 6px 12px; background: linear-gradient(180deg, #151522, #0a0a12); border-radius: 30px 30px 0 0; }
+    .device-display {
+      position: absolute; top: 45px; left: 30px; right: 30px; height: 110px;
+      background: linear-gradient(180deg, #050510, #101020); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.25);
+      padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: inset 0 0 30px rgba(0, 212, 255, 0.12);
+    }
+    .display-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .display-main-value { font-size: 2.75rem; font-weight: 900; color: var(--primary); font-family: 'SF Mono', monospace; text-shadow: 0 0 15px var(--primary); }
+    .display-unit { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); }
+    .display-status {
+      font-size: 0.75rem; color: var(--secondary); background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.3);
+      padding: 5px 10px; border-radius: 6px; display: flex; align-items: center; gap: 5px; font-weight: 600;
+    }
+    .display-status-dot { width: 6px; height: 6px; background: var(--secondary); border-radius: 50%; box-shadow: 0 0 8px var(--secondary); animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .display-bars { display: flex; gap: 4px; align-items: flex-end; }
+    .bar { width: 9px; background: var(--primary); border-radius: 2px; box-shadow: 0 0 6px var(--primary); animation: barBounce 2s ease-in-out infinite; }
+    .bar:nth-child(1) { height: 14px; opacity: 0.5; animation-delay: 0s; }
+    .bar:nth-child(2) { height: 20px; opacity: 0.7; animation-delay: 0.15s; }
+    .bar:nth-child(3) { height: 26px; opacity: 0.9; animation-delay: 0.3s; }
+    .bar:nth-child(4) { height: 32px; animation-delay: 0.45s; }
+    @keyframes barBounce { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.4); } }
+    .display-bottom { display: flex; justify-content: space-between; font-size: 0.78rem; color: rgba(255, 255, 255, 0.55); font-family: 'SF Mono', monospace; }
+    .device-ports { position: absolute; bottom: 40px; left: 30px; right: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .port {
+      height: 54px; background: linear-gradient(180deg, #151525, #0a0a15); border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.18);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: all 0.3s;
+    }
+    .port:hover { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 212, 255, 0.25); }
+    .port-icon { width: 22px; height: 14px; border: 2px solid rgba(0, 212, 255, 0.4); border-radius: 2px; }
+    .port-label { font-size: 0.65rem; color: rgba(0, 212, 255, 0.65); }
+    .port-ac { position: relative; }
+    .port-ac::before { content: ''; width: 16px; height: 16px; border: 2px solid rgba(0, 212, 255, 0.4); border-radius: 50%; }
+    .port-ac::after { content: '~'; position: absolute; font-size: 11px; color: rgba(0, 212, 255, 0.4); }
+    .device-side-vent {
+      position: absolute; left: -18px; top: 70px; bottom: 70px; width: 36px;
+      background: linear-gradient(90deg, #121220, #222235); border-radius: 12px 0 0 12px;
+    }
+    .vent-slats {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 85%;
+      background: repeating-linear-gradient(0deg, #050510 0px, #050510 4px, transparent 4px, transparent 7px);
+    }
+    .device-badge {
+      position: absolute; top: 24px; right: 24px; padding: 6px 12px; background: var(--gradient-primary); color: #050508;
+      font-size: 0.7rem; font-weight: 900; border-radius: 6px; letter-spacing: 0.12em; text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+    .product-rings { position: absolute; inset: -80px; pointer-events: none; }
+    .product-ring {
+      position: absolute; border-radius: 50%; border: 1px solid rgba(0, 212, 255, 0.12);
+      left: 50%; top: 50%; transform: translate(-50%, -50%);
+      animation: ringRotate 20s linear infinite;
+    }
+    .product-ring:nth-child(1) { width: 300px; height: 300px; border-style: dashed; animation-duration: 25s; animation-direction: reverse; }
+    .product-ring:nth-child(2) { width: 380px; height: 380px; border-style: dotted; animation-duration: 30s; }
+    .product-ring:nth-child(3) { width: 460px; height: 460px; animation-duration: 35s; animation-direction: reverse; }
+    @keyframes ringRotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .product-card-top {
+      position: relative; height: 300px; background: linear-gradient(145deg, #151528, #0a0a15); display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .product-card-top::before {
+      content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(0,212,255,0.08) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .product-card:hover .product-card-top::before { opacity: 1; }
+    .product-card-mini { position: relative; width: 160px; height: 200px; }
+    .mini-device-glow {
+      position: absolute; width: 130%; height: 130%; left: -15%; top: -15%;
+      background: radial-gradient(circle, rgba(0,212,255,0.2) 0%, transparent 60%);
+      animation: miniGlow 3s ease-in-out infinite; opacity: 0.6;
+    }
+    @keyframes miniGlow { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } }
+    .mini-device {
+      position: absolute; inset: 10px; background: linear-gradient(145deg, #1a1a2a, #252538); border-radius: 14px; border: 1px solid rgba(0, 212, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.08);
+      transition: transform 0.4s;
+    }
+    .product-card:hover .mini-device { transform: translateY(-5px) scale(1.05); }
+    .mini-display { position: absolute; top: 28px; left: 20px; right: 20px; height: 55px; background: #050510; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.28); box-shadow: inset 0 0 20px rgba(0,212,255,0.12); }
+    .mini-display-val { position: absolute; top: 10px; left: 10px; font-size: 1.2rem; font-weight: 900; color: var(--primary); font-family: 'SF Mono', monospace; text-shadow: 0 0 12px var(--primary); }
+    .mini-ports { position: absolute; bottom: 22px; left: 20px; right: 20px; display: flex; gap: 6px; }
+    .mini-port { flex: 1; height: 34px; background: #0a0a15; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.2); }
+    .hero-scroll-indicator {
+      position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: rgba(255, 255, 255, 0.5); font-size: 0.8rem;
+    }
+    .scroll-icon {
+      width: 28px; height: 44px; border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 14px; position: relative;
+    }
+    .scroll-icon::after {
+      content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 5px; height: 10px;
+      background: var(--primary); border-radius: 2px; animation: scrollAnim 1.8s infinite; box-shadow: 0 0 8px var(--primary);
+    }
+    @keyframes scrollAnim { 0% { opacity: 1; top: 8px; } 100% { opacity: 0; top: 26px; } }
+
+    /* ===== TRUST BAR ===== */
+    .trust-bar {
+      padding: 1.5rem 0; background: rgba(10, 10, 20, 0.7);
+      border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);
+      position: relative; z-index: 2;
+    }
+    .trust-bar::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    }
+    .trust-bar-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: center; gap: 3.5rem; flex-wrap: wrap; align-items: center; }
+    .trust-item { display: flex; align-items: center; gap: 0.875rem; color: rgba(255, 255, 255, 0.65); font-size: 0.9rem; }
+    .trust-icon {
+      width: 36px; height: 36px; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.25); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 800;
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section { padding: 6rem 2rem; position: relative; z-index: 2; }
+    .section-header { max-width: 760px; margin: 0 auto 4rem; text-align: center; }
+    .section-kicker {
+      display: inline-flex; align-items: center; gap: 0.625rem; font-size: 0.78rem; font-weight: 800;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--primary); margin-bottom: 1rem;
+      padding: 0.5rem 1rem; background: rgba(0, 212, 255, 0.06); border: 1px solid var(--border-subtle); border-radius: 100px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem;
+      color: var(--text-white);
+    }
+    .section-subtitle { font-size: 1.05rem; color: rgba(255, 255, 255, 0.65); line-height: 1.7; }
+    .divider-line {
+      width: 120px; height: 2px; background: var(--gradient-primary); margin: 1.5rem auto; position: relative;
+    }
+    .divider-line::before, .divider-line::after {
+      content: ''; position: absolute; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; top: -3px;
+      box-shadow: 0 0 12px var(--primary);
+    }
+    .divider-line::before { left: -4px; } .divider-line::after { right: -4px; }
+
+    /* ===== PRODUCTS GRID ===== */
+    .products-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .product-card {
+      background: var(--gradient-card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-subtle);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; cursor: pointer;
+    }
+    .product-card::before {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(0, 212, 255, 0.06), transparent);
+      opacity: 0; transition: opacity 0.4s; pointer-events: none;
+    }
+    .product-card:hover::before { opacity: 1; }
+    .product-card:hover {
+      transform: translateY(-12px) scale(1.02); border-color: rgba(0, 212, 255, 0.4);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 212, 255, 0.1);
+    }
+    .product-card-top {
+      position: relative; height: 300px; background: linear-gradient(145deg, #151528, #0a0a15); display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .product-tag {
+      position: absolute; top: 18px; left: 18px; padding: 6px 12px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      border-radius: 6px;
+    }
+    .product-tag.new { background: var(--gradient-primary); color: #050508; box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+    .product-tag.hot { background: var(--accent-orange); color: white; }
+    .product-card-mini { position: relative; width: 150px; height: 200px; }
+    .mini-device {
+      position: absolute; inset: 10px; background: linear-gradient(145deg, #1a1a2a, #252538); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.15);
+    }
+    .mini-display { position: absolute; top: 28px; left: 20px; right: 20px; height: 55px; background: #050510; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.2); }
+    .mini-display-val { position: absolute; top: 10px; left: 10px; font-size: 1.1rem; font-weight: 800; color: var(--primary); font-family: 'SF Mono', monospace; text-shadow: 0 0 8px var(--primary); }
+    .mini-ports { position: absolute; bottom: 22px; left: 20px; right: 20px; display: flex; gap: 6px; }
+    .mini-port { flex: 1; height: 34px; background: #0a0a15; border-radius: 6px; border: 1px solid rgba(0, 212, 255, 0.15); }
+    .product-card-body { padding: 1.75rem; }
+    .product-series { font-size: 0.75rem; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem; }
+    .product-name { font-size: 1.35rem; font-weight: 800; color: var(--text-white); margin-bottom: 0.5rem; }
+    .product-desc { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1.25rem; line-height: 1.6; }
+    .product-specs { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .spec { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); }
+    .spec strong { color: var(--primary); font-family: 'SF Mono', monospace; font-weight: 700; }
+    .product-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .product-price { display: flex; align-items: baseline; gap: 0.5rem; }
+    .price-current { font-size: 1.7rem; font-weight: 900; color: var(--primary); font-family: 'SF Mono', monospace; }
+    .price-original { font-size: 0.95rem; color: var(--text-faint); text-decoration: line-through; }
+    .btn-buy-card {
+      padding: 0.75rem 1.5rem; background: var(--gradient-primary); border: none; border-radius: 10px;
+      color: #050508; font-weight: 800; font-size: 0.9rem; transition: all 0.25s;
+    }
+    .btn-buy-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.35); }
+
+    /* ===== FEATURE BANNER ===== */
+    .feature-banner {
+      padding: 5rem 2rem; background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(0, 255, 136, 0.04) 100%);
+      border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); position: relative; z-index: 2; overflow: hidden;
+    }
+    .feature-banner-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; align-items: center; position: relative; }
+    .feature-banner-title { font-size: 2.4rem; font-weight: 900; color: var(--text-white); margin-bottom: 1rem; line-height: 1.2; }
+    .feature-banner-title span { color: var(--primary); }
+    .feature-banner-text { font-size: 1.05rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; line-height: 1.8; }
+    .feature-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .feature-list-item {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem;
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: var(--text-white); transition: all 0.3s;
+    }
+    .feature-list-item:hover { border-color: rgba(0, 212, 255, 0.4); background: rgba(0, 212, 255, 0.06); transform: translateX(4px); }
+    .feature-check {
+      width: 24px; height: 24px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #050508; font-weight: 900; font-size: 0.8rem; flex-shrink: 0;
+    }
+    .factory-visual {
+      height: 360px; background: linear-gradient(145deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.04)); border-radius: 18px; border: 1px solid rgba(0, 212, 255, 0.2);
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    }
+    .factory-content { text-align: center; color: var(--text-white); position: relative; z-index: 1; }
+    .factory-icon { font-size: 4.5rem; margin-bottom: 1rem; display: block; filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.5)); animation: factoryPulse 4s ease-in-out infinite; }
+    @keyframes factoryPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .factory-text { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+    .factory-sub { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.5rem; }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-wrap { max-width: 1100px; margin: 0 auto; background: var(--gradient-card); border-radius: 20px; border: 1px solid var(--border-subtle); overflow: hidden; }
+    .comparison-header-row { display: grid; grid-template-columns: 1fr 1fr 1fr; background: linear-gradient(180deg, #050510, #0a0a18); border-bottom: 1px solid rgba(0, 212, 255, 0.18); }
+    .comparison-cell { padding: 1.5rem; text-align: center; color: var(--text-primary); }
+    .comparison-cell:first-child { text-align: left; }
+    .comparison-header-title { font-weight: 800; font-size: 1.1rem; color: var(--text-white); }
+    .comparison-header-highlight { background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.08)); border-left: 1px solid rgba(0, 212, 255, 0.3); border-right: 1px solid rgba(0, 212, 255, 0.3); position: relative; }
+    .comparison-header-highlight::before {
+      content: ''; display: block; font-size: 0.7rem; color: var(--primary); margin-bottom: 0.25rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .comparison-row { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid rgba(0, 212, 255, 0.08); transition: background 0.2s; }
+    .comparison-row:last-child { border-bottom: none; }
+    .comparison-row:hover { background: rgba(0, 212, 255, 0.03); }
+    .comparison-row .comparison-cell { display: flex; align-items: center; justify-content: center; padding: 1.25rem 1.5rem; }
+    .comparison-row .comparison-cell:first-child { justify-content: flex-start; font-weight: 600; color: rgba(255, 255, 255, 0.7); }
+    .comparison-checkmark { color: var(--secondary); font-size: 1.5rem; margin-right: 0.5rem; filter: drop-shadow(0 0 8px var(--secondary)); }
+    .comparison-price-val { font-size: 2rem; font-weight: 900; color: var(--primary); font-family: 'SF Mono', monospace; }
+    .comparison-note { color: var(--text-faint); font-size: 0.85rem; margin-top: 0.25rem; }
+
+    /* ===== TECHNOLOGY SECTION ===== */
+    .tech-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; }
+    .tech-card {
+      background: var(--gradient-card); padding: 2rem; border-radius: 18px; border: 1px solid var(--border-subtle); text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
+    }
+    .tech-card::before {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(0, 212, 255, 0.06), transparent);
+      transform: translateX(-100%); transition: transform 0.7s;
+    }
+    .tech-card:hover::before { transform: translateX(100%); }
+    .tech-card:hover { transform: translateY(-10px); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(0, 212, 255, 0.1); }
+    .tech-icon-wrap {
+      width: 72px; height: 72px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.1)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; position: relative;
+    }
+    .tech-icon-wrap::after {
+      content: ''; position: absolute; inset: -5px; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 18px; animation: iconGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes iconGlow { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0; transform: scale(1.15); } }
+    .tech-title { font-size: 1.1rem; font-weight: 800; color: var(--text-white); margin-bottom: 0.75rem; }
+    .tech-desc { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); line-height: 1.7; }
+
+    /* ===== USE CASES ===== */
+    .usecases-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .usecase-card {
+      position: relative; height: 380px; border-radius: 18px; overflow: hidden; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+    }
+    .usecase-card:hover { transform: translateY(-12px) scale(1.02); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55); }
+    .usecase-bg { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.85)); transition: transform 0.5s; }
+    .usecase-card:hover .usecase-bg { transform: scale(1.1); }
+    .usecase-1 .usecase-bg { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><rect fill=\"%231a1a3a\" width=\"400\" height=\"400\"/><circle cx=\"200\" cy=\"300\" r=\"120\" fill=\"%232a2a4a\"/><rect x=\"150\" y=\"240\" width=\"100\" height=\"80\" fill=\"%233a3a5a\" rx=\"4\"/></svg>'); background-size: cover; }
+    .usecase-2 .usecase-bg { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><rect fill=\"%231a3a1a\" width=\"400\" height=\"400\"/><path d=\"M50 350 L200 150 L350 350 Z\" fill=\"%232a4a2a\"/><circle cx=\"320\" cy=\"80\" r=\"40\" fill=\"%23ffcc00\" opacity=\"0.5\"/></svg>'); background-size: cover; }
+    .usecase-3 .usecase-bg { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><rect fill=\"%231a1a4a\" width=\"400\" height=\"400\"/><rect x=\"50\" y=\"200\" width=\"300\" height=\"150\" fill=\"%232a2a5a\" rx=\"8\"/><circle cx=\"100\" cy=\"150\" r=\"60\" fill=\"%233a3a6a\"/><circle cx=\"200\" cy=\"130\" r=\"70\" fill=\"%233a3a6a\"/><circle cx=\"300\" cy=\"150\" r=\"60\" fill=\"%233a3a6a\"/></svg>'); background-size: cover; }
+    .usecase-4 .usecase-bg { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><rect fill=\"%233a2a1a\" width=\"400\" height=\"400\"/><rect x=\"100\" y=\"180\" width=\"200\" height=\"140\" fill=\"%234a3a2a\" rx=\"4\"/><rect x=\"120\" y=\"100\" width=\"60\" height=\"100\" fill=\"%235a4a3a\"/></svg>'); background-size: cover; }
+    .usecase-content { position: absolute; inset: 0; padding: 1.75rem; display: flex; flex-direction: column; justify-content: flex-end; color: var(--text-white); background: linear-gradient(180deg, transparent, rgba(0,0,0,0.85)); transition: background 0.4s; }
+    .usecase-card:hover .usecase-content { background: linear-gradient(180deg, transparent, rgba(0,0,0,0.92)); }
+    .usecase-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .usecase-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .usecase-text { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6; }
+    .usecase-glow { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gradient-primary); transform: scaleX(0); transition: transform 0.4s; }
+    .usecase-card:hover .usecase-glow { transform: scaleX(1); }
+
+    /* ===== BRAND STORY & SUPPLY ===== */
+    .brand-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: center; }
+    .brand-tag { display: inline-flex; align-items: center; gap: 0.625rem; padding: 0.625rem 1.125rem; background: rgba(0, 212, 255, 0.08); border: 1px solid var(--border-subtle); border-radius: 10px; color: var(--primary); font-weight: 700; font-size: 0.85rem; margin-bottom: 1.5rem; }
+    .brand-title { font-size: 2.5rem; font-weight: 900; color: var(--text-white); margin-bottom: 1.25rem; line-height: 1.2; letter-spacing: -0.03em; }
+    .brand-title span { color: var(--primary); }
+    .brand-text { font-size: 1.05rem; color: rgba(255, 255, 255, 0.68); margin-bottom: 1.5rem; line-height: 1.8; }
+    .brand-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 2.5rem; }
+    .brand-stat {
+      padding: 1.5rem; background: var(--gradient-card); border: 1px solid var(--border-subtle); border-radius: 14px; position: relative; overflow: hidden; transition: all 0.3s;
+    }
+    .brand-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient-primary); }
+    .brand-stat:hover { transform: translateY(-5px); border-color: rgba(0, 212, 255, 0.4); }
+    .brand-stat-num { font-size: 2.2rem; font-weight: 900; color: var(--primary); font-family: 'SF Mono', monospace; }
+    .brand-stat-label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem; }
+    .supply-map-visual { position: relative; height: 420px; background: linear-gradient(145deg, #050510, #0a0a18); border-radius: 18px; border: 1px solid rgba(0, 212, 255, 0.2); overflow: hidden; }
+    .map-svg-bg { position: absolute; inset: 0; opacity: 0.15; }
+    .map-line-anim { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); animation: mapLinePulse 3s ease-in-out infinite; }
+    @keyframes mapLinePulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.85; } }
+    .map-pins { position: absolute; inset: 0; }
+    .map-pin { position: absolute; width: 16px; height: 16px; background: var(--primary); border-radius: 50%; animation: pinPulse 2.5s ease-in-out infinite; box-shadow: 0 0 15px var(--primary); }
+    .map-pin::after {
+      content: ''; position: absolute; inset: -6px; border: 2px solid var(--primary); border-radius: 50%; animation: pinRing 2.5s infinite;
+    }
+    @keyframes pinPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: 0.7; } }
+    @keyframes pinRing { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+    .pin-th { top: 50%; left: 65%; }
+    .pin-vn { top: 45%; left: 70%; animation-delay: 0.6s; }
+    .pin-sg { top: 58%; left: 60%; animation-delay: 1.2s; }
+    .pin-label {
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; white-space: nowrap;
+      font-size: 0.78rem; color: rgba(255, 255, 255, 0.85); background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(0, 212, 255, 0.25); padding: 6px 10px; border-radius: 6px;
+    }
+
+    /* ===== CUSTOMER SERVICE SECTION ===== */
+    .service-section { padding: 6rem 2rem; background: linear-gradient(135deg, rgba(0, 212, 255, 0.06) 0%, rgba(0, 255, 136, 0.03) 100%); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); position: relative; z-index: 2; }
+    .service-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .service-card {
+      background: var(--gradient-card); border-radius: 18px; border: 1px solid var(--border-subtle); padding: 2.25rem; text-align: center; transition: all 0.4s;
+    }
+    .service-card:hover { transform: translateY(-10px); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45); }
+    .service-icon { width: 64px; height: 64px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.1)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.8rem; }
+    .service-title { font-size: 1.2rem; font-weight: 800; color: var(--text-white); margin-bottom: 0.75rem; }
+    .service-text { font-size: 0.95rem; color: rgba(255, 255, 255, 0.65); line-height: 1.7; margin-bottom: 1.25rem; }
+    .service-cta {
+      color: var(--primary); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.375rem; transition: gap 0.2s;
+    }
+    .service-cta:hover { gap: 0.625rem; }
+
+    /* ===== CTA BOTTOM ===== */
+    .cta-bottom { padding: 6rem 2rem; text-align: center; position: relative; z-index: 2; }
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+    .cta-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: var(--text-white); margin-bottom: 1rem; letter-spacing: -0.03em; }
+    .cta-title span { color: var(--primary); }
+    .cta-text { font-size: 1.05rem; color: rgba(255, 255, 255, 0.65); margin-bottom: 2.5rem; line-height: 1.7; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-cta-primary {
+      padding: 1.1rem 2.5rem; background: var(--gradient-primary); border: none; border-radius: 12px;
+      color: #050508; font-weight: 900; font-size: 1.05rem; transition: all 0.3s;
+    }
+    .btn-cta-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(0, 212, 255, 0.4); }
+    .btn-cta-secondary {
+      padding: 1.1rem 2.25rem; background: transparent; border: 1.5px solid var(--border-strong); border-radius: 12px;
+      color: var(--primary); font-weight: 700; font-size: 1.05rem; transition: all 0.3s;
+    }
+    .btn-cta-secondary:hover { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 30px var(--primary-glow); }
+
+    /* ===== FOOTER ===== */
+    footer { background: #050508; border-top: 1px solid rgba(0, 212, 255, 0.1); padding: 5rem 2rem 2rem; position: relative; z-index: 2; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3.5rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .footer-brand-desc { color: rgba(255, 255, 255, 0.6); font-size: 0.95rem; line-height: 1.8; margin-top: 1rem; margin-bottom: 1.5rem; max-width: 360px; }
+    .footer-socials { display: flex; gap: 0.875rem; }
+    .social-btn {
+      width: 44px; height: 44px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 800; transition: all 0.25s;
+    }
+    .social-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35); }
+    .footer-col-title { font-size: 0.85rem; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); margin-bottom: 1.25rem; }
+    .footer-links li { margin-bottom: 0.75rem; }
+    .footer-links a { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { color: rgba(255, 255, 255, 0.4); font-size: 0.85rem; }
+    .footer-bottom-links { display: flex; gap: 1.5rem; }
+    .footer-bottom-links a { color: rgba(255, 255, 255, 0.45); font-size: 0.85rem; transition: color 0.2s; }
+    .footer-bottom-links a:hover { color: var(--primary); }
+
+    /* ===== ANIMATION CLASSES ===== */
+    .fade-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-left { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-left.visible { opacity: 1; transform: translateX(0); }
+    .fade-right { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-right.visible { opacity: 1; transform: translateX(0); }
+    .scale-up { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .scale-up.visible { opacity: 1; transform: scale(1); }
+
+    /* ===== LANGUAGE TOGGLE ===== */
+    [data-lang="en"] .zh { display: none; }
+    [data-lang="zh"] .en { display: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; padding-top: 60px; }
+      .hero-content { order: 2; }
+      .hero-product { order: 1; }
+      .hero-desc { margin-left: auto; margin-right: auto; }
+      .hero-stats { justify-content: center; }
+      .hero-cta { justify-content: center; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+      .usecases-grid { grid-template-columns: repeat(2, 1fr); }
+      .brand-grid { grid-template-columns: 1fr; }
+      .feature-banner-inner { grid-template-columns: 1fr; }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .hero-ring { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-phone { display: none; }
+      .mobile-menu-btn { display: flex; }
+      .products-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .usecases-grid { grid-template-columns: 1fr; }
+      .comparison-header-row, .comparison-row { grid-template-columns: 1fr; }
+      .comparison-cell { padding: 1rem; }
+      .comparison-row .comparison-cell:first-child { text-align: center; background: rgba(0, 212, 255, 0.05); }
+      .service-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; text-align: center; }
+      .footer-socials { justify-content: center; }
+      .footer-brand-desc { margin-left: auto; margin-right: auto; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .brand-stats { grid-template-columns: 1fr; }
+      .feature-list { grid-template-columns: 1fr; }
+      .product-device { width: 260px; height: 320px; }
+    }
+  </style>
+</head>
+<body data-lang="zh">
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading">
+    <div class="loading-logo">GEN Z</div>
+    <div class="loading-bar"><div class="loading-progress"></div></div>
+    <div class="loading-percent"><span id="loadPercent">0</span>%</div>
+  </div>
+
+  <!-- Cursor Glow Effect -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Background Effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+  <div class="particles" id="particles"></div>
+  <div class="scanlines"></div>
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="#" class="logo">
+          <div class="logo-mark">Z</div>
+          <div class="logo-text">GEN<span>Z</span></div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="#products"><span class="zh">产品</span><span class="en">Products</span></a></li>
+          <li><a href="#tech"><span class="zh">技术</span><span class="en">Technology</span></a></li>
+          <li><a href="#usecases"><span class="zh">场景</span><span class="en">Use Cases</span></a></li>
+          <li><a href="#brand"><span class="zh">品牌</span><span class="en">Brand</span></a></li>
+          <li><a href="#service"><span class="zh">服务</span><span class="en">Service</span></a></li>
+        </ul>
+      </div>
+      <div class="nav-right">
+        <div class="nav-phone">
+          <span>📞</span><span class="zh">400-888-8888</span><span class="en">+1 800-888-8888</span>
+        </div>
+        <button class="lang-switch" onclick="toggleLang()">EN / 中文</button>
+        <button class="btn-nav-outline"><span class="zh">经销商</span><span class="en">Dealers</span></button>
+        <button class="btn-nav-primary"><span class="zh">立即购买</span><span class="en">Shop Now</span></button>
+        <button class="mobile-menu-btn"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-content fade-up">
+        <div class="hero-pre">
+          <div class="hero-pre-pill">NEW 2026</div>
+          <div class="hero-pre-text"><span class="zh">新加坡品牌 · 缅甸智造</span><span class="en">Singapore Brand • Myanmar Made</span></div>
+        </div>
+        <h1 class="hero-title">
+          <span class="zh">为下一代供电</span><span class="en">Power the Next</span><br>
+          <span class="highlight"><span class="zh">POWER THE NEXT GEN</span><span class="en">Generation</span></span>
+        </h1>
+        <p class="hero-desc">
+          <span class="zh">新加坡设计研发，缅甸智能制造。性能媲美行业标杆，价格降低40%，让每个人都能享受清洁能源。</span>
+          <span class="en">Designed in Singapore, made in Myanmar. Industry-leading performance at 40% lower cost, making clean energy accessible to all.</span>
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">-40%</div>
+            <div class="hero-stat-label"><span class="zh">更低价格</span><span class="en">Lower Cost</span></div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">2000+</div>
+            <div class="hero-stat-label"><span class="zh">循环寿命</span><span class="en">Cycle Life</span></div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">5年</div>
+            <div class="hero-stat-label"><span class="zh">质保承诺</span><span class="en">Warranty</span></div>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <button class="btn-hero-primary">
+            <span class="zh">立即选购</span><span class="en">Shop Now</span>
+            <span>→</span>
+          </button>
+          <button class="btn-hero-secondary">
+            <span class="zh">了解更多</span><span class="en">Learn More</span>
+          </button>
+        </div>
+      </div>
+      <div class="hero-product scale-up">
+        <div class="product-showcase">
+          <div class="hero-product-glow"></div>
+          <div class="product-holo-frame"></div>
+          <div class="product-rings">
+            <div class="product-ring"></div>
+            <div class="product-ring"></div>
+            <div class="product-ring"></div>
+          </div>
+          <div class="product-device">
+            <div class="device-body">
+              <div class="device-handle-top"></div>
+              <div class="device-badge">NEW</div>
+              <div class="device-display">
+                <div class="display-top">
+                  <div><span class="display-main-value">100</span><span class="display-unit">%</span></div>
+                  <div class="display-status"><span class="display-status-dot"></span><span class="zh">纯正弦波</span><span class="en">Pure Sine</span></div>
+                </div>
+                <div class="display-bottom"><div>IN: 500W</div><div>OUT: 1800W</div><div>ETA: 32h</div></div>
+              </div>
+              <div class="device-ports">
+                <div class="port"><div class="port-icon"></div><div class="port-label">USB-C</div></div>
+                <div class="port"><div class="port-icon"></div><div class="port-label">USB-A</div></div>
+                <div class="port port-ac"></div>
+                <div class="port port-ac"></div>
+              </div>
+            </div>
+            <div class="device-side-vent"><div class="vent-slats"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <div class="scroll-icon"></div>
+      <span class="zh">向下滚动</span><span class="en">Scroll Down</span>
+    </div>
+  </section>
+
+  <section class="trust-bar">
+    <div class="trust-bar-inner">
+      <div class="trust-item"><div class="trust-icon">✓</div><span class="zh">新加坡设计</span><span class="en">Designed in Singapore</span></div>
+      <div class="trust-item"><div class="trust-icon">🏭</div><span class="zh">缅甸智造</span><span class="en">Made in Myanmar</span></div>
+      <div class="trust-item"><div class="trust-icon">🛡</div><span class="zh">BMS智能保护</span><span class="en">Smart BMS Protection</span></div>
+      <div class="trust-item"><div class="trust-icon">🔋</div><span class="zh">LiFePO4电池</span><span class="en">LiFePO4 Battery</span></div>
+      <div class="trust-item"><div class="trust-icon">⚡</div><span class="zh">1.5小时快充</span><span class="en">1.5hr Fast Charge</span></div>
+      <div class="trust-item"><div class="trust-icon">🌏</div><span class="zh">全球配送</span><span class="en">Global Shipping</span></div>
+    </div>
+  </section>
+
+  <!-- Brand Marquee -->
+  <section class="marquee-container">
+    <div class="marquee">
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">新加坡设计</span><span class="en">Designed in Singapore</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">缅甸智造</span><span class="en">Made in Myanmar</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">LiFePO4 电池</span><span class="en">LiFePO4 Battery</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">智能 BMS</span><span class="en">Smart BMS</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">5年质保</span><span class="en">5-Year Warranty</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">极速快充</span><span class="en">Fast Charging</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">太阳能兼容</span><span class="en">Solar Compatible</span></div>
+      <!-- Duplicate for loop -->
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">新加坡设计</span><span class="en">Designed in Singapore</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">缅甸智造</span><span class="en">Made in Myanmar</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">LiFePO4 电池</span><span class="en">LiFePO4 Battery</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">智能 BMS</span><span class="en">Smart BMS</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">5年质保</span><span class="en">5-Year Warranty</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">极速快充</span><span class="en">Fast Charging</span></div>
+      <div class="marquee-item"><span class="marquee-dot"></span><span class="zh">太阳能兼容</span><span class="en">Solar Compatible</span></div>
+    </div>
+  </section>
+
+  <section class="section section-light" id="products">
+    <div class="section-header fade-up">
+      <div class="section-kicker">PRODUCTS</div>
+      <h2 class="section-title"><span class="zh">探索全系列产品</span><span class="en">Explore Our Products</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle">
+        <span class="zh">从便携电源到家庭储能，满足你所有场景的电力需求</span>
+        <span class="en">From portable stations to home storage, we cover all your power needs</span>
+      </p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card fade-up">
+        <div class="product-card-top">
+          <div class="product-tag new"><span class="zh">新品</span><span class="en">NEW</span></div>
+          <div class="product-card-mini">
+            <div class="mini-device-glow"></div>
+            <div class="mini-device">
+              <div class="mini-display"><div class="mini-display-val">1500</div></div>
+              <div class="mini-ports"><div class="mini-port"></div><div class="mini-port"></div><div class="mini-port"></div><div class="mini-port"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-series">PORTABLE SERIES</div>
+          <h3 class="product-name">Gen Z P1</h3>
+          <p class="product-desc"><span class="zh">1500Wh容量，2000W输出，完美适合户外露营和移动办公。</span><span class="en">1500Wh, 2000W output, perfect for camping & mobile office.</span></p>
+          <div class="product-specs"><div class="spec"><strong>1500Wh</strong> Capacity</div><div class="spec"><strong>2000W</strong> Output</div></div>
+          <div class="product-card-footer">
+            <div class="product-price"><span class="price-current">¥4,999</span><span class="price-original">¥8,999</span></div>
+            <button class="btn-buy-card"><span class="zh">立即购买</span><span class="en">Buy Now</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card fade-up" style="transition-delay:0.1s">
+        <div class="product-card-top">
+          <div class="product-tag hot"><span class="zh">热销</span><span class="en">HOT</span></div>
+          <div class="product-card-mini">
+            <div class="mini-device-glow"></div>
+            <div class="mini-device" style="height:220px;top:0">
+              <div class="mini-display" style="top:35px"><div class="mini-display-val">3000</div></div>
+              <div class="mini-ports" style="bottom:25px"><div class="mini-port"></div><div class="mini-port"></div><div class="mini-port"></div><div class="mini-port"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-series">HOME SERIES</div>
+          <h3 class="product-name">Gen Z H2</h3>
+          <p class="product-desc"><span class="zh">3000Wh大容量，3500W输出，家庭应急和房车旅行的理想选择。</span><span class="en">3000Wh, 3500W output, ideal for home backup & RV travel.</span></p>
+          <div class="product-specs"><div class="spec"><strong>3000Wh</strong> Capacity</div><div class="spec"><strong>3500W</strong> Output</div></div>
+          <div class="product-card-footer">
+            <div class="product-price"><span class="price-current">¥8,999</span><span class="price-original">¥14,999</span></div>
+            <button class="btn-buy-card"><span class="zh">立即购买</span><span class="en">Buy Now</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card fade-up" style="transition-delay:0.2s">
+        <div class="product-card-top">
+          <div class="product-card-mini">
+            <div class="mini-device-glow"></div>
+            <div class="mini-device" style="height:160px;top:20px">
+              <div class="mini-display" style="top:20px;height:40px"><div class="mini-display-val" style="font-size:0.85rem">600</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-series">MINI SERIES</div>
+          <h3 class="product-name">Gen Z M1</h3>
+          <p class="product-desc"><span class="zh">600Wh轻巧设计，800W输出，日常外出和短途旅行的绝佳伴侣。</span><span class="en">600Wh lightweight, 800W output, perfect for daily outings.</span></p>
+          <div class="product-specs"><div class="spec"><strong>600Wh</strong> Capacity</div><div class="spec"><strong>800W</strong> Output</div></div>
+          <div class="product-card-footer">
+            <div class="product-price"><span class="price-current">¥2,499</span><span class="price-original">¥3,999</span></div>
+            <button class="btn-buy-card"><span class="zh">立即购买</span><span class="en">Buy Now</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="feature-banner">
+    <div class="feature-banner-inner">
+      <div class="fade-up">
+        <h2 class="feature-banner-title">
+          <span class="zh">相同的品质，</span><span class="en">Same Quality,</span><br>
+          <span><span class="zh">一半的价格</span><span class="en">Half the Price</span></span>
+        </h2>
+        <p class="feature-banner-text">
+          <span class="zh">我们在东南亚建立现代化工厂，采用领先的自动化生产线，在保证品质的同时大幅降低成本。</span>
+          <span class="en">We've built state-of-the-art factories in SE Asia with leading automated production lines, significantly reducing costs while maintaining quality.</span>
+        </p>
+        <div class="feature-list">
+          <div class="feature-list-item"><div class="feature-check">✓</div><span class="zh">同级BMS安全系统</span><span class="en">Premium BMS Safety</span></div>
+          <div class="feature-list-item"><div class="feature-check">✓</div><span class="zh">汽车级LiFePO4电池</span><span class="en">Automotive-grade LiFePO4</span></div>
+          <div class="feature-list-item"><div class="feature-check">✓</div><span class="zh">智能APP控制</span><span class="en">Smart App Control</span></div>
+          <div class="feature-list-item"><div class="feature-check">✓</div><span class="zh">全球联保服务</span><span class="en">Global Warranty</span></div>
+        </div>
+      </div>
+      <div class="scale-up">
+        <div class="factory-visual">
+          <div class="factory-content">
+            <span class="factory-icon">🏭</span>
+            <div class="factory-text"><span class="zh">新加坡 · 缅甸</span><span class="en">Singapore • Myanmar</span></div>
+            <div class="factory-sub"><span class="zh">新加坡设计 · 缅甸智造</span><span class="en">Designed in SG, Made in Myanmar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header fade-up">
+      <div class="section-kicker">COMPARISON</div>
+      <h2 class="section-title"><span class="zh">一目了然的选择</span><span class="en">The Clear Choice</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">相同的规格参数，我们提供更具竞争力的价格</span><span class="en">Same specs, we offer more competitive pricing</span></p>
+    </div>
+    <div class="comparison-wrap fade-up">
+      <div class="comparison-header-row">
+        <div class="comparison-cell"><div class="comparison-header-title"><span class="zh">规格对比</span><span class="en">Specs</span></div></div>
+        <div class="comparison-cell comparison-header-highlight" style="--zh-text: 瞻溢 GEN Z; --en-text: GEN Z Energy;">
+          <div class="comparison-header-title"><span class="zh">瞻溢 GEN Z</span><span class="en">GEN Z Energy</span></div>
+        </div>
+        <div class="comparison-cell"><div class="comparison-header-title"><span class="zh">国际品牌</span><span class="en">International Brand</span></div></div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">电池容量</span><span class="en">Capacity</span></div>
+        <div class="comparison-cell"><strong>1500Wh</strong></div>
+        <div class="comparison-cell"><strong>1500Wh</strong></div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">持续输出</span><span class="en">Output</span></div>
+        <div class="comparison-cell"><strong>2000W</strong></div>
+        <div class="comparison-cell"><strong>2000W</strong></div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">电池类型</span><span class="en">Battery Type</span></div>
+        <div class="comparison-cell"><span class="comparison-checkmark">✓</span> LiFePO4</div>
+        <div class="comparison-cell"><span class="comparison-checkmark">✓</span> LiFePO4</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">循环寿命</span><span class="en">Cycle Life</span></div>
+        <div class="comparison-cell"><strong>2000+</strong> <span class="zh">次</span><span class="en">cycles</span></div>
+        <div class="comparison-cell"><strong>2000+</strong> cycles</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">快充时间</span><span class="en">Fast Charge</span></div>
+        <div class="comparison-cell"><strong>1.5</strong> hrs</div>
+        <div class="comparison-cell"><strong>1.5</strong> hrs</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">质保年限</span><span class="en">Warranty</span></div>
+        <div class="comparison-cell"><strong>5</strong> <span class="zh">年</span><span class="en">years</span></div>
+        <div class="comparison-cell"><strong>5</strong> years</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-cell"><span class="zh">价格</span><span class="en">Price</span></div>
+        <div class="comparison-cell"><div class="comparison-price-val">¥4,999</div></div>
+        <div class="comparison-cell">
+          <div class="comparison-price-val" style="color: var(--text-faint); text-decoration: line-through;">¥8,999</div>
+          <div class="comparison-note"><span class="zh">贵 40%</span><span class="en">40% higher</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="tech">
+    <div class="section-header fade-up">
+      <div class="section-kicker">TECHNOLOGY</div>
+      <h2 class="section-title"><span class="zh">核心技术优势</span><span class="en">Core Technologies</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">我们投入巨资研发，只为给你最好的产品体验</span><span class="en">We've invested heavily in R&D to deliver the best experience</span></p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card fade-up">
+        <div class="tech-icon-wrap">🔋</div>
+        <h3 class="tech-title"><span class="zh">智能BMS系统</span><span class="en">Smart BMS</span></h3>
+        <p class="tech-desc"><span class="zh">12重安全保护，实时监控电池状态，过充过放自动保护，让你使用无忧。</span><span class="en">12-layer safety protection, real-time monitoring, auto-protection for over-charge/discharge.</span></p>
+      </div>
+      <div class="tech-card fade-up" style="transition-delay:0.1s">
+        <div class="tech-icon-wrap">⚡</div>
+        <h3 class="tech-title"><span class="zh">超快充技术</span><span class="en">Ultra Fast Charge</span></h3>
+        <p class="tech-desc"><span class="zh">1.5小时从0充到80%，领先的快充技术，电力随时待命。</span><span class="en">0 to 80% in 1.5 hours, leading fast-charge tech, always ready.</span></p>
+      </div>
+      <div class="tech-card fade-up" style="transition-delay:0.2s">
+        <div class="tech-icon-wrap">🌞</div>
+        <h3 class="tech-title"><span class="zh">太阳能充电</span><span class="en">Solar Charging</span></h3>
+        <p class="tech-desc"><span class="zh">支持500W太阳能输入，真正的绿色能源，户外旅行必备。</span><span class="en">500W solar input, truly green energy, essential for outdoors.</span></p>
+      </div>
+      <div class="tech-card fade-up" style="transition-delay:0.3s">
+        <div class="tech-icon-wrap">📱</div>
+        <h3 class="tech-title"><span class="zh">APP智能控制</span><span class="en">Smart App Control</span></h3>
+        <p class="tech-desc"><span class="zh">远程监控、OTA升级、智能场景设置，让电力尽在掌握。</span><span class="en">Remote monitoring, OTA updates, smart scenes, power at fingertips.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light" id="usecases">
+    <div class="section-header fade-up">
+      <div class="section-kicker">USE CASES</div>
+      <h2 class="section-title"><span class="zh">各种场景 全能应对</span><span class="en">Power Every Scenario</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">无论是户外探险还是家庭应急，我们都能满足你的电力需求</span><span class="en">From outdoor adventures to home backup, we cover your power needs</span></p>
+    </div>
+    <div class="usecases-grid">
+      <div class="usecase-card usecase-1 fade-up">
+        <div class="usecase-bg"></div>
+        <div class="usecase-content">
+          <div class="usecase-icon">🏕</div>
+          <h3 class="usecase-title"><span class="zh">户外露营</span><span class="en">Camping</span></h3>
+          <p class="usecase-text"><span class="zh">为你的露营装备供电，享受大自然也能拥有现代便利</span><span class="en">Power your camping gear, enjoy nature with modern comforts</span></p>
+        </div>
+        <div class="usecase-glow"></div>
+      </div>
+      <div class="usecase-card usecase-2 fade-up" style="transition-delay:0.1s">
+        <div class="usecase-bg"></div>
+        <div class="usecase-content">
+          <div class="usecase-icon">🚐</div>
+          <h3 class="usecase-title"><span class="zh">房车旅行</span><span class="en">RV Travel</span></h3>
+          <p class="usecase-text"><span class="zh">房车旅行的完美伴侣，让你的旅程更加舒适自在</span><span class="en">Perfect companion for RV travel, making your journey more comfortable</span></p>
+        </div>
+        <div class="usecase-glow"></div>
+      </div>
+      <div class="usecase-card usecase-3 fade-up" style="transition-delay:0.2s">
+        <div class="usecase-bg"></div>
+        <div class="usecase-content">
+          <div class="usecase-icon">🏠</div>
+          <h3 class="usecase-title"><span class="zh">家庭应急</span><span class="en">Home Backup</span></h3>
+          <p class="usecase-text"><span class="zh">停电时的可靠后盾，保障家人的正常生活不受影响</span><span class="en">Reliable backup during outages, keeping family life uninterrupted</span></p>
+        </div>
+        <div class="usecase-glow"></div>
+      </div>
+      <div class="usecase-card usecase-4 fade-up" style="transition-delay:0.3s">
+        <div class="usecase-bg"></div>
+        <div class="usecase-content">
+          <div class="usecase-icon">🛠</div>
+          <h3 class="usecase-title"><span class="zh">作业施工</span><span class="en">Job Sites</span></h3>
+          <p class="usecase-text"><span class="zh">户外作业的强力帮手，为各种电动工具提供电力</span><span class="en">Powerful helper for outdoor work, powering all kinds of tools</span></p>
+        </div>
+        <div class="usecase-glow"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="brand">
+    <div class="brand-grid">
+      <div class="fade-left">
+        <div class="brand-tag">SEA • GLOBAL QUALITY</div>
+        <h2 class="brand-title">
+          <span class="zh">新加坡设计</span><span class="en">Designed in Singapore,</span><br>
+          <span class="zh">缅甸智造</span><span class="en">Made in Myanmar</span>
+        </h2>
+        <p class="brand-text">
+          <span class="zh">瞻溢 GEN Z 创立于2024年，由新加坡团队设计研发。我们在缅甸建立了现代化的智能制造基地，将新加坡的品质标准与缅甸的制造优势结合，让高品质清洁能源触手可及。</span>
+          <span class="en">Founded in 2024, GEN Z Energy is designed & developed in Singapore. We've established smart manufacturing in Myanmar, combining Singapore quality standards with Myanmar production advantages.</span>
+        </p>
+        <p class="brand-text">
+          <span class="zh">我们的核心团队来自全球领先的科技公司，在储能领域拥有超过10年的经验。我们相信，好的产品不应该只有少数人能负担得起。</span>
+          <span class="en">Our core team comes from leading global tech companies, with over 10 years of experience in energy storage. We believe good products shouldn't only be affordable to a select few.</span>
+        </p>
+        <div class="brand-stats">
+          <div class="brand-stat"><div class="brand-stat-num">50+</div><div class="brand-stat-label"><span class="zh">研发工程师</span><span class="en">R&D Engineers</span></div></div>
+          <div class="brand-stat"><div class="brand-stat-num">300+</div><div class="brand-stat-label"><span class="zh">专业员工</span><span class="en">Skilled Employees</span></div></div>
+          <div class="brand-stat"><div class="brand-stat-num">20+</div><div class="brand-stat-label"><span class="zh">销售国家</span><span class="en">Countries</span></div></div>
+          <div class="brand-stat"><div class="brand-stat-num">100K+</div><div class="brand-stat-label"><span class="zh">满意用户</span><span class="en">Happy Customers</span></div></div>
+        </div>
+      </div>
+      <div class="fade-right">
+        <div class="supply-map-visual">
+          <svg class="map-svg-bg" viewBox="0 0 400 300" fill="none">
+            <path d="M150 80 L180 60 L220 70 L260 50 L300 80 L280 120 L320 150 L280 180 L240 160 L200 180 L160 150 L140 120 Z" fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.25)" stroke-width="1"/>
+            <path d="M80 120 L120 100 L140 130 L120 180 L80 160 Z" fill="rgba(0,255,136,0.08)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+          </svg>
+          <div class="map-line-anim" style="top:50%;left:58%;width:8%;transform:rotate(15deg)"></div>
+          <div class="map-line-anim" style="top:55%;left:60%;width:6%;transform:rotate(-10deg);animation-delay:1s"></div>
+          <div class="map-pins">
+            <div class="map-pin pin-th"><div class="pin-label"><span class="zh">缅甸工厂</span><span class="en">Myanmar Factory</span></div></div>
+            <div class="map-pin pin-vn" style="display:none;"><div class="pin-label"><span class="zh">越南工厂</span><span class="en">Vietnam Factory</span></div></div>
+            <div class="map-pin pin-sg"><div class="pin-label"><span class="zh">新加坡总部</span><span class="en">Singapore HQ</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="service-section" id="service">
+    <div class="section-header fade-up">
+      <div class="section-kicker">CUSTOMER SERVICE</div>
+      <h2 class="section-title"><span class="zh">用心服务每一位用户</span><span class="en">We Care About You</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">我们不仅提供优秀的产品，更提供贴心的服务</span><span class="en">We don't just offer great products, we offer thoughtful service</span></p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card fade-up">
+        <div class="service-icon">✉️</div>
+        <h3 class="service-title"><span class="zh">24/7 在线客服</span><span class="en">24/7 Support</span></h3>
+        <p class="service-text"><span class="zh">全天候在线客服团队，随时解答你的疑问，提供专业的购买建议和使用指导。</span><span class="en">Round-the-clock online support team, ready to answer questions and provide professional advice.</span></p>
+        <a href="#" class="service-cta"><span class="zh">联系客服</span><span class="en">Contact Us</span> →</a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.1s">
+        <div class="service-icon">🚚</div>
+        <h3 class="service-title"><span class="zh">极速配送服务</span><span class="en">Fast Delivery</span></h3>
+        <p class="service-text"><span class="zh">全球物流网络覆盖，国内24小时发货，让你尽快收到心仪的产品。</span><span class="en">Global logistics network, 24hr shipping domestically, get your product quickly.</span></p>
+        <a href="#" class="service-cta"><span class="zh">查看物流</span><span class="en">Shipping Info</span> →</a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.2s">
+        <div class="service-icon">🔧</div>
+        <h3 class="service-title"><span class="zh">5年质保服务</span><span class="en">5-Year Warranty</span></h3>
+        <p class="service-text"><span class="zh">5年超长质保承诺，专业的售后服务团队，让你的使用没有后顾之忧。</span><span class="en">5-year warranty promise, professional after-sales team, no worries after purchase.</span></p>
+        <a href="#" class="service-cta"><span class="zh">了解政策</span><span class="en">Warranty Policy</span> →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section section-dark" id="testimonials">
+    <div class="section-header fade-up">
+      <div class="section-kicker">TESTIMONIALS</div>
+      <h2 class="section-title"><span class="zh">用户怎么说</span><span class="en">What Our Users Say</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">来自全球用户的真实评价</span><span class="en">Real reviews from customers worldwide</span></p>
+    </div>
+    <div class="testimonials-container fade-up">
+      <div class="testimonial-nav prev" onclick="prevTestimonial()">‹</div>
+      <div class="testimonials-track" id="testimonialTrack">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text"><span class="zh">"露营的时候终于可以安心用电了，煮咖啡、看电影都没问题！电池很耐用，充电也快。"</span><span class="en">"Perfect for camping! Makes coffee and runs movies. Battery lasts long and charges fast."</span></p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">L</div>
+            <div>
+              <div class="testimonial-name"><span class="zh">李明</span><span class="en">Ming Li</span></div>
+              <div class="testimonial-role"><span class="zh">户外爱好者</span><span class="en">Outdoor Enthusiast</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text"><span class="zh">"性价比太高了！同样的配置价格便宜一半，用了半年完全没问题，推荐给身边朋友。"</span><span class="en">"Incredible value! Half price for same specs. Used for 6 months with zero issues. Highly recommend."</span></p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">S</div>
+            <div>
+              <div class="testimonial-name"><span class="zh">Sarah W.</span><span class="en">Sarah W.</span></div>
+              <div class="testimonial-role"><span class="zh">家庭用户</span><span class="en">Home User</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★☆</div>
+          <p class="testimonial-text"><span class="zh">"做工很扎实，APP也很好用，可以实时看电量。客户服务回复很快，有问必答。"</span><span class="en">"Build quality is solid. App is great for checking battery status. Support responds fast to questions."</span></p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">王</div>
+            <div>
+              <div class="testimonial-name"><span class="zh">王浩</span><span class="en">Hao Wang</span></div>
+              <div class="testimonial-role"><span class="zh">摄影师</span><span class="en">Photographer</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text"><span class="zh">"停电救星！上次小区停电，全靠它保存了冰箱里的食物，还能开空调，太安心了。"</span><span class="en">"Blackout lifesaver! Saved all food in fridge and ran AC during power outage. Total peace of mind."</span></p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">M</div>
+            <div>
+              <div class="testimonial-name"><span class="zh">Maria G.</span><span class="en">Maria G.</span></div>
+              <div class="testimonial-role"><span class="zh">家庭主妇</span><span class="en">Homemaker</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text"><span class="zh">"工地干活再也不用拉电线了，方便太多！机器很皮实，颠簸震动都不怕。"</span><span class="en">"No more wiring on site! So convenient. Unit is tough, no problem with bumps and vibrations."</span></p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">张</div>
+            <div>
+              <div class="testimonial-name"><span class="zh">张工程</span><span class="en">Zhang G.</span></div>
+              <div class="testimonial-role"><span class="zh">工程承包商</span><span class="en">Contractor</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-nav next" onclick="nextTestimonial()">›</div>
+      <div class="testimonial-dots" id="testimonialDots"></div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section section-light" id="faq">
+    <div class="section-header fade-up">
+      <div class="section-kicker">FAQ</div>
+      <h2 class="section-title"><span class="zh">常见问题</span><span class="en">Frequently Asked Questions</span></h2>
+      <div class="divider-line"></div>
+      <p class="section-subtitle"><span class="zh">你可能想知道的</span><span class="en">Questions you might have</span></p>
+    </div>
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+      <div class="faq-item fade-up active">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          <span><span class="zh">电池寿命是多长？</span><span class="en">How long is the battery life?</span></span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner"><span class="zh">我们使用的 LiFePO4 电池支持 2000+ 次充放电循环，正常使用可长达 5-8 年。我们提供 5 年质保服务。</span><span class="en">Our LiFePO4 batteries support 2000+ charge cycles, lasting 5-8 years with normal use. We include a 5-year warranty.</span></div>
+        </div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.05s">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          <span><span class="zh">充电需要多长时间？</span><span class="en">How long does it take to charge?</span></span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner"><span class="zh">使用市电快充，1.5 小时可充电到 80%。也支持车载充电和太阳能充电，太阳能需要约 4-6 小时取决于光照。</span><span class="en">Fast charge to 80% in 1.5hrs from AC power. Also supports car charging and solar (4-6hrs depending on sun).</span></div>
+        </div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.1s">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          <span><span class="zh">可以带动空调吗？</span><span class="en">Can it run an air conditioner?</span></span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner"><span class="zh">可以！2000W 输出可以支持小型空调、冰箱、电磁炉等家用设备。使用时间取决于具体电器功率。</span><span class="en">Yes! 2000W output can run small AC units, fridges, induction cooktops, etc. Runtime depends on appliance wattage.</span></div>
+        </div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.15s">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          <span><span class="zh">售后政策是什么？</span><span class="en">What's the return policy?</span></span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner"><span class="zh">收到产品 30 天内无理由退换。5 年质保期内出现非人为质量问题，免费维修或换新。全球联保。</span><span class="en">30-day no-question returns. 5-year warranty covers defects with free repair or replacement, worldwide.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-bottom">
+    <div class="cta-inner fade-up">
+      <h2 class="cta-title">
+        <span class="zh">准备好开始了吗？</span><span class="en">Ready to Get Started?</span><br>
+        <span class="zh">开启你的清洁能源之旅</span><span class="en">Start Your Clean Energy Journey</span>
+      </h2>
+      <p class="cta-text">
+        <span class="zh">立即选购瞻溢 GEN Z 产品，开启你的清洁能源之旅。首单用户可享受额外9折优惠！</span>
+        <span class="en">Shop GEN Z Energy today and start your clean energy journey. First-time customers get an extra 10% off!</span>
+      </p>
+      <div class="cta-buttons">
+        <button class="btn-cta-primary"><span class="zh">立即购买</span><span class="en">Buy Now</span></button>
+        <button class="btn-cta-secondary"><span class="zh">联系经销商</span><span class="en">Contact Dealer</span></button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <a href="#" class="logo">
+            <div class="logo-mark">Z</div>
+            <div class="logo-text">GEN<span>Z</span></div>
+          </a>
+          <p class="footer-brand-desc">
+            <span class="zh">为下一代供电。来自东南亚的新一代移动能源品牌，让清洁能源触手可及。</span>
+            <span class="en">Powering the next generation. New-gen portable energy brand from SE Asia, making clean energy accessible to all.</span>
+          </p>
+          <div class="footer-socials">
+            <div class="social-btn">f</div>
+            <div class="social-btn">t</div>
+            <div class="social-btn">in</div>
+            <div class="social-btn">yt</div>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-col-title"><span class="zh">产品</span><span class="en">Products</span></h4>
+          <ul class="footer-links">
+            <li><a href="#"><span class="zh">便携式电站</span><span class="en">Portable Stations</span></a></li>
+            <li><a href="#"><span class="zh">家庭储能</span><span class="en">Home Storage</span></a></li>
+            <li><a href="#"><span class="zh">太阳能板</span><span class="en">Solar Panels</span></a></li>
+            <li><a href="#"><span class="zh">配件</span><span class="en">Accessories</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-col-title"><span class="zh">支持</span><span class="en">Support</span></h4>
+          <ul class="footer-links">
+            <li><a href="#"><span class="zh">使用指南</span><span class="en">User Guide</span></a></li>
+            <li><a href="#"><span class="zh">常见问题</span><span class="en">FAQ</span></a></li>
+            <li><a href="#"><span class="zh">保修政策</span><span class="en">Warranty</span></a></li>
+            <li><a href="#"><span class="zh">联系我们</span><span class="en">Contact Us</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-col-title"><span class="zh">公司</span><span class="en">Company</span></h4>
+          <ul class="footer-links">
+            <li><a href="#"><span class="zh">关于我们</span><span class="en">About</span></a></li>
+            <li><a href="#"><span class="zh">新闻中心</span><span class="en">Press</span></a></li>
+            <li><a href="#"><span class="zh">加入我们</span><span class="en">Careers</span></a></li>
+            <li><a href="#"><span class="zh">经销商合作</span><span class="en">Partners</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 GEN Z Energy. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#"><span class="zh">隐私政策</span><span class="en">Privacy</span></a>
+          <a href="#"><span class="zh">服务条款</span><span class="en">Terms</span></a>
+          <a href="#"><span class="zh">Cookie设置</span><span class="en">Cookies</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==========================
+    // LOADING ANIMATION
+    // ==========================
+    let loadPercent = 0;
+    const loadingEl = document.getElementById('loading');
+    const percentEl = document.getElementById('loadPercent');
+
+    const loadInterval = setInterval(() => {
+      loadPercent += Math.ceil(Math.random() * 15);
+      if (loadPercent >= 100) {
+        loadPercent = 100;
+        clearInterval(loadInterval);
+        setTimeout(() => {
+          loadingEl.classList.add('hidden');
+        }, 300);
+      }
+      percentEl.textContent = loadPercent;
+    }, 100);
+
+    // ==========================
+    // CURSOR GLOW EFFECT (Desktop only)
+    // ==========================
+    const cursorGlow = document.getElementById('cursorGlow');
+    if (window.matchMedia('(hover: hover)').matches) {
+      cursorGlow.style.opacity = '1';
+      document.addEventListener('mousemove', (e) => {
+        cursorGlow.style.left = (e.clientX - 150) + 'px';
+        cursorGlow.style.top = (e.clientY - 150) + 'px';
+      });
+    }
+
+    // ==========================
+    // NAV SCROLL EFFECT
+    // ==========================
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ==========================
+    // INTERSECTION OBSERVER for ANIMATIONS
+    // ==========================
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Trigger number counting animation
+          if (entry.target.classList.contains('brand-stats')) {
+            entry.target.querySelectorAll('.brand-stat-num').forEach(counterAnimate);
+          }
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-up').forEach(el => observer.observe(el));
+
+    // ==========================
+    // NUMBER COUNTING ANIMATION
+    // ==========================
+    function counterAnimate(el) {
+      const txt = el.textContent;
+      const match = txt.match(/(\d+)/);
+      if (match && !el.dataset.animated) {
+        el.dataset.animated = 'true';
+        const target = parseInt(match[1]);
+        const suffix = txt.replace(/\d+/g, '');
+        let current = 0;
+        const step = Math.ceil(target / 40);
+        const counterInterval = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(counterInterval);
+          }
+          el.textContent = current + suffix;
+        }, 40);
+      }
+    }
+
+    // ==========================
+    // LANGUAGE TOGGLE
+    // ==========================
+    let lang = 'zh';
+    function toggleLang() {
+      const body = document.body;
+      lang = lang === 'zh' ? 'en' : 'zh';
+      body.setAttribute('data-lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    }
+
+    // ==========================
+    // FAQ TOGGLE
+    // ==========================
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const wasActive = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+      if (!wasActive) {
+        item.classList.add('active');
+      }
+    }
+
+    // ==========================
+    // TESTIMONIALS CAROUSEL
+    // ==========================
+    let testimonialIndex = 0;
+    const testimonialTrack = document.getElementById('testimonialTrack');
+    const dotsContainer = document.getElementById('testimonialDots');
+    let testimonialDots = [];
+
+    if (testimonialTrack) {
+      const cards = testimonialTrack.querySelectorAll('.testimonial-card');
+      cards.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'testimonial-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToTestimonial(i));
+        dotsContainer.appendChild(dot);
+        testimonialDots.push(dot);
+      });
+    }
+
+    function updateDots() {
+      testimonialDots.forEach((dot, i) => dot.classList.toggle('active', i === testimonialIndex));
+    }
+
+    function goToTestimonial(index) {
+      const cardWidth = 360 + 24; // 360 width + 24 gap
+      testimonialTrack.style.transform = `translateX(-${index * cardWidth}px)`;
+      testimonialIndex = index;
+      updateDots();
+    }
+
+    function nextTestimonial() {
+      const totalCards = testimonialTrack.querySelectorAll('.testimonial-card').length;
+      goToTestimonial((testimonialIndex + 1) % totalCards);
+    }
+
+    function prevTestimonial() {
+      const totalCards = testimonialTrack.querySelectorAll('.testimonial-card').length;
+      goToTestimonial((testimonialIndex - 1 + totalCards) % totalCards);
+    }
+
+    // Auto play
+    let testimonialInterval = setInterval(nextTestimonial, 5000);
+
+    // Pause on hover
+    if (testimonialTrack) {
+      testimonialTrack.parentElement.addEventListener('mouseenter', () => clearInterval(testimonialInterval));
+      testimonialTrack.parentElement.addEventListener('mouseleave', () => {
+        clearInterval(testimonialInterval);
+        testimonialInterval = setInterval(nextTestimonial, 5000);
+      });
+    }
+
+    // ==========================
+    // MOBILE MENU
+    // ==========================
+    function toggleMobile() { alert('Mobile menu coming soon!'); }
+
+    // ==========================
+    // SMOOTH SCROLL
+    // ==========================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // ==========================
+    // FLOATING PARTICLES
+    // ==========================
+    const particlesContainer = document.getElementById('particles');
+    function createParticles() {
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 20 + 's';
+        p.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particlesContainer.appendChild(p);
+      }
+    }
+    createParticles();
+
+    // ==========================
+    // DYNAMIC DISPLAY VALUE
+    // ==========================
+    const displayVal = document.querySelector('.display-main-value');
+    if (displayVal) {
+      setInterval(() => {
+        displayVal.textContent = 97 + Math.floor(Math.random() * 5);
+      }, 4500);
+    }
+
+    // ==========================
+    // BUTTON RIPPLE EFFECT
+    // ==========================
+    document.querySelectorAll('button, a').forEach(el => {
+      if (el.tagName !== 'A' || el.href && el.href !== '#') {
+        el.addEventListener('click', function(e) {
+          const ripple = document.createElement('span');
+          ripple.className = 'ripple-wave';
+          const rect = this.getBoundingClientRect();
+          ripple.style.left = (e.clientX - rect.left) + 'px';
+          ripple.style.top = (e.clientY - rect.top) + 'px';
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
